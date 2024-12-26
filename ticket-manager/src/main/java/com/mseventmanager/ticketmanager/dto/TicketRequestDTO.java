@@ -12,4 +12,11 @@ import lombok.Setter;
 @Setter
 public class TicketRequestDTO {
 
+    private String customerName;
+    private String cpf;
+    private String customerMail;
+    private String eventName;
+    private String eventId;
+    private int tickets;
+
 }
