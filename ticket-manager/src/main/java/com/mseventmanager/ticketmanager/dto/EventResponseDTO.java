@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 public class EventResponseDTO {
 
-    private String eventId;
+    private String id;
     private boolean valid;
 
 }

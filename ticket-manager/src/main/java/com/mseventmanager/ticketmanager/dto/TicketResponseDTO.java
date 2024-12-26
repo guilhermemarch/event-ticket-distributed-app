@@ -11,8 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TicketResponseDTO {
-
-    private Long id;
+    private String id;
     private String customerName;
     private String cpf;
     private String customerMail;
