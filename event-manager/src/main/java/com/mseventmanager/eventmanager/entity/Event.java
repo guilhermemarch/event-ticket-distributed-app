@@ -14,7 +14,7 @@ public class Event {
     @Id
     private String id;
     private String eventName;
-    private LocalDateTime dateTime;
+    private String dateTime;
     private String cep;
     private String logradouro;
     private String bairro;

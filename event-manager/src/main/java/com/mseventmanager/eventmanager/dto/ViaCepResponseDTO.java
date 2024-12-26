@@ -1,10 +1,15 @@
 package com.mseventmanager.eventmanager.dto;
 
-public class ViaResponseDTO {
+import lombok.*;
 
-    private String cep;
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@Data
+public class ViaCepResponseDTO {
+
     private String logradouro;
-    private String complemento;
     private String bairro;
     private String localidade;
     private String uf;
