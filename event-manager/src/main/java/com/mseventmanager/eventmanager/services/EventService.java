@@ -1,9 +1,12 @@
 package com.mseventmanager.eventmanager.services;
 
+import com.mseventmanager.eventmanager.clients.TicketServiceClient;
 import com.mseventmanager.eventmanager.clients.ViaCepClient;
+import com.mseventmanager.eventmanager.dto.CheckTicketsResponseDTO;
 import com.mseventmanager.eventmanager.dto.EventRequestDTO;
 import com.mseventmanager.eventmanager.dto.EventResponseDTO;
 import com.mseventmanager.eventmanager.dto.ViaCepResponseDTO;
+import com.mseventmanager.eventmanager.exceptions.EventDeletionException;
 import com.mseventmanager.eventmanager.mapper.EventMapper;
 import com.mseventmanager.eventmanager.entity.Event;
 import com.mseventmanager.eventmanager.repositories.EventRepository;
@@ -25,7 +28,8 @@ public class EventService {
     @Autowired
     private ViaCepClient viaCepClient;
 
-
+    @Autowired
+    private TicketServiceClient ticketServiceClient;
 
     public EventResponseDTO createEvent(EventRequestDTO request) {
 
@@ -51,8 +55,15 @@ public class EventService {
         return eventRepository.findById(id);
     }
 
-    public void deleteEvent(String id) {
-        eventRepository.deleteById(id);
+
+    public void deleteEvent(String eventId) {
+        CheckTicketsResponseDTO response = ticketServiceClient.checkTicketsByEvent(eventId);
+
+        if (response != null && response.isHasTickets()) {
+            throw new EventDeletionException("Evento não pode ser deletado, existem ingressos vendidos.");
+        }
+
+        eventRepository.deleteById(eventId);
     }
 
     public EventResponseDTO updateEvent(String id, EventRequestDTO request) {
@@ -72,17 +83,9 @@ public class EventService {
         return eventMapper.toDTO(updatedEvent);
     }
 
-
-//    createEvent(EventRequest request) (concluido)
-//
-//    findEventById(String id) ((concluido))
-//
-//    findAllEvents() (concluido)
-//
-//    findAllEventsSorted()
-//
-//    updateEvent(String id, EventRequest request)  (CONCLUIDO)
-//
-//    deleteEvent(String id)  (CONCLUIDO)
+    public List<Event> getAllEventsSorted() {
+        List<Event> events = eventRepository.findAllByOrderByDateTimeAsc();
+        return events;
+    }
 
 }
