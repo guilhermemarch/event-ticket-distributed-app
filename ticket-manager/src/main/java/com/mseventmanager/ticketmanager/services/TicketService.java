@@ -1,6 +1,7 @@
 package com.mseventmanager.ticketmanager.services;
 
 import com.mseventmanager.ticketmanager.clients.EventManagerClient;
+import com.mseventmanager.ticketmanager.dto.CheckTicketsResponseDTO;
 import com.mseventmanager.ticketmanager.dto.EventResponseDTO;
 import com.mseventmanager.ticketmanager.dto.TicketRequestDTO;
 import com.mseventmanager.ticketmanager.dto.TicketResponseDTO;
@@ -73,6 +74,16 @@ public class TicketService {
         return  tickets.stream()
                 .map(ticketMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    public CheckTicketsResponseDTO checkTicketsByEvent(String eventId) {
+        boolean hasTickets = ticketRepository.existsByIdAndStatus(eventId, Ticket.TicketStatus.ACTIVE);
+
+        CheckTicketsResponseDTO response = new CheckTicketsResponseDTO();
+        response.setEventId(eventId);
+        response.setHasTickets(hasTickets);
+
+        return response;
     }
 }
 

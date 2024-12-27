@@ -1,6 +1,7 @@
 package com.mseventmanager.ticketmanager.controllers;
 
 
+import com.mseventmanager.ticketmanager.dto.CheckTicketsResponseDTO;
 import com.mseventmanager.ticketmanager.dto.TicketRequestDTO;
 import com.mseventmanager.ticketmanager.dto.TicketResponseDTO;
 import com.mseventmanager.ticketmanager.services.TicketService;
@@ -41,6 +42,13 @@ public class TicketControler {
     @GetMapping("/get-ticket-by-event/{eventId}")
     public ResponseEntity<List<TicketResponseDTO>> getTicketsByEventId(@PathVariable String eventId) {
         List<TicketResponseDTO> response = ticketService.getTicketsByEventId(eventId);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/check-tickets-by-event/{eventId}")
+    public ResponseEntity<CheckTicketsResponseDTO> checkTicketsByEvent(@PathVariable String eventId) {
+        CheckTicketsResponseDTO response = ticketService.checkTicketsByEvent(eventId);
 
         return ResponseEntity.ok(response);
     }
