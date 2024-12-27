@@ -13,5 +13,11 @@ import lombok.Setter;
 public class EventResponseDTO {
 
     private String id;
+    private String eventName;
+    private String dateTime;
+    private String logradouro;
+    private String bairro;
+    private String cidade;
+    private String uf;
 
 }
