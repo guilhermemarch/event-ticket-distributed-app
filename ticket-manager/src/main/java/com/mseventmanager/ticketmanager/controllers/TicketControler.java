@@ -37,4 +37,13 @@ public class TicketControler {
         List<TicketResponseDTO> response = ticketService.getTicketsByCpf(cpf);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/get-ticket-by-event/{eventId}")
+    public ResponseEntity<List<TicketResponseDTO>> getTicketsByEventId(@PathVariable String eventId) {
+        List<TicketResponseDTO> response = ticketService.getTicketsByEventId(eventId);
+
+        return ResponseEntity.ok(response);
+    }
+
+
 }
