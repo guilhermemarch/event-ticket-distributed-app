@@ -13,6 +13,5 @@ import lombok.Setter;
 public class EventResponseDTO {
 
     private String id;
-    private boolean valid;
 
 }
