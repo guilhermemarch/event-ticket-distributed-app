@@ -1,4 +1,4 @@
-package com.mseventmanager.eventmanager;
+package com.mseventmanager.ticketmanager;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
