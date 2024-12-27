@@ -4,6 +4,7 @@ package com.mseventmanager.ticketmanager.controllers;
 import com.mseventmanager.ticketmanager.dto.TicketRequestDTO;
 import com.mseventmanager.ticketmanager.dto.TicketResponseDTO;
 import com.mseventmanager.ticketmanager.services.TicketService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class TicketControler {
 
 
     @PostMapping("/create-ticket")
-    public ResponseEntity<TicketResponseDTO> createTicket(@RequestBody TicketRequestDTO request) {
+    public ResponseEntity<TicketResponseDTO> createTicket(@Valid @RequestBody TicketRequestDTO request) {
 
         TicketResponseDTO response = ticketService.createTicket(request);
 

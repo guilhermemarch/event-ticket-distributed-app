@@ -5,17 +5,14 @@ import com.mseventmanager.ticketmanager.dto.TicketRequestDTO;
 import com.mseventmanager.ticketmanager.dto.TicketResponseDTO;
 import com.mseventmanager.ticketmanager.entity.Ticket;
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface TicketMapper {
 
-        TicketMapper INSTANCE = Mappers.getMapper(TicketMapper.class);
-
+        @Mapping(target = "event.eventName", source = "eventName")
         Ticket toTicket(TicketRequestDTO ticketRequest);
 
-        TicketResponseDTO toTicketResponse(Ticket ticket);
 
         TicketResponseDTO toDTO(Ticket ticket);
-
 }

@@ -34,30 +34,22 @@ public class TicketService {
 
 
 
-
-
     public TicketResponseDTO createTicket(TicketRequestDTO request) {
 
-        EventResponseDTO eventResponse;
-        try {
-            eventResponse = eventManagerClient.validateEvent(request.getEventId());
-            if (eventResponse == null || eventResponse.getId() == null) {
-                throw new EventNotFoundException("Evento com ID " + request.getEventId() + " não encontrado.");
-            }
-        } catch (Exception e) {
-            throw new EventNotFoundException("Evento com ID (" + request.getEventId() + ") não encontrado.");
+        EventResponseDTO eventResponse = eventManagerClient.validateEvent(request.getEventId());
+        if (eventResponse == null || eventResponse.getId() == null) {
+            throw new EventNotFoundException("Evento com ID " + request.getEventId() + " não encontrado.");
         }
 
-
-
         Ticket ticket = ticketMapper.toTicket(request);
-
-        ticket.setStatus(ACTIVE);
+        ticket.setEvent(eventResponse);
+        ticket.setStatus(Ticket.TicketStatus.ACTIVE);
 
         ticket = ticketRepository.save(ticket);
 
         return ticketMapper.toDTO(ticket);
     }
+
 
     public TicketResponseDTO getTicketById(String id) {
         Ticket ticket = ticketRepository.findById(id).orElse(null);

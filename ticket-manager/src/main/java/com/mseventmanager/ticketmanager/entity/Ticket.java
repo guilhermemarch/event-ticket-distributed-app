@@ -1,6 +1,7 @@
 package com.mseventmanager.ticketmanager.entity;
 
 
+import com.mseventmanager.ticketmanager.dto.EventResponseDTO;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -14,11 +15,10 @@ public class Ticket {
     private String customerName;
     private String cpf;
     private String customerMail;
-    private String eventId;
-    private String eventName;
     private int tickets;
     private TicketStatus status;
 
+    private EventResponseDTO event;
 
     public enum TicketStatus {
         ACTIVE, CANCELLED
