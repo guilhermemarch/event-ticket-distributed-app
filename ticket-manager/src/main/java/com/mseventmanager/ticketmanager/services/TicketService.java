@@ -68,6 +68,12 @@ public class TicketService {
                 .collect(Collectors.toList());
     }
 
+    public List<TicketResponseDTO> getTicketsByEventId(String eventId) {
+        List<Ticket> tickets = ticketRepository.findByEventId(eventId);
+        return  tickets.stream()
+                .map(ticketMapper::toDTO)
+                .collect(Collectors.toList());
+    }
 }
 
 
