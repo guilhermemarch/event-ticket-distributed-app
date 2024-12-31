@@ -15,6 +15,7 @@ import java.util.List;
 @RestController
 public class TicketControler {
 
+
     @Autowired
     private TicketService ticketService;
 
@@ -53,5 +54,17 @@ public class TicketControler {
         return ResponseEntity.ok(response);
     }
 
+    @PutMapping("/update-ticket/{id}")
+    public ResponseEntity<TicketResponseDTO> updateTicket(@PathVariable String id, @RequestBody TicketRequestDTO request) {
+        TicketResponseDTO response = ticketService.updateTicket(id, request);
 
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/cancel-ticket/{id}")
+    public ResponseEntity<Void> cancelTicket(@PathVariable String id) {
+        ticketService.cancelTicket(id);
+
+        return ResponseEntity.noContent().build();
+    }
 }
