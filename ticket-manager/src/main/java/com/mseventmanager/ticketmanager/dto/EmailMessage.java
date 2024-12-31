@@ -6,17 +6,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
+
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class TicketRequestDTO {
-
-    private String customerName;
-    private String cpf;
-    private String customerMail;
-    private String eventName;
-    private String eventId;
-   // private int tickets;
+public class EmailMessage implements Serializable {
+    private String to;
+    private String subject;
+    private String body;
 
 }

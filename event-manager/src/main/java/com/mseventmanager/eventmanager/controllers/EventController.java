@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-@RestController
+@RestController("api/event")
 public class EventController {
 
     @Autowired
@@ -60,6 +60,12 @@ public class EventController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/get-all-events/sorted")
+    public ResponseEntity<List<Event>> getAllEventsSorted() {
+        List<Event> events = eventService.getAllEventsSorted();
+        return ResponseEntity.ok(events);
+    }
+
 //
 //    createEvent(EventRequest request) - POST /create-event (concluido)
 //
@@ -67,7 +73,7 @@ public class EventController {
 //
 //    getAllEvents() - GET /get-all-events (CONCLUIDO)
 //
-//    getAllEventsSorted() - GET /get-all-events/sorted
+//    getAllEventsSorted() - GET /get-all-events/sorted (CONCLUIDO)
 //
 //    updateEvent(String id, EventRequest request)  - PUT /update-event/{id}  (CONCLUIDO)
 //

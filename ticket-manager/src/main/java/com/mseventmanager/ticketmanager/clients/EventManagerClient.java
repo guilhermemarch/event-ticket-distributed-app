@@ -1,6 +1,5 @@
 package com.mseventmanager.ticketmanager.clients;
 
-
 import com.mseventmanager.ticketmanager.dto.EventResponseDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;

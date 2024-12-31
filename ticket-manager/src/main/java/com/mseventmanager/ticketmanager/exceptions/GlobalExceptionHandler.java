@@ -13,6 +13,19 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
+    
+    public class TicketNotFoundException extends RuntimeException {
+        public TicketNotFoundException(String message) {
+            super(message);
+        }
+    }
+
+    @ExceptionHandler(TicketNotFoundException.class)
+    public ResponseEntity<Object> handleEventNotFoundException(TicketNotFoundException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
 
     static class ErrorResponse {
         private int status;

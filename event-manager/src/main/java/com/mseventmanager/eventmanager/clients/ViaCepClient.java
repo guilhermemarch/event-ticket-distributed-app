@@ -12,6 +12,6 @@ public interface ViaCepClient {
     @GetMapping(value = "{cep}/json")
     ViaCepResponseDTO getAddressByCep(@PathVariable("cep") String cep);
 
-//    getAddressByCep(String cep) - Consome a API ViaCEP (concluido)
+
 
 }
