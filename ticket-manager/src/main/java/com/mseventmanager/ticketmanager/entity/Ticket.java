@@ -6,6 +6,8 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.math.BigDecimal;
+
 @Data
 @Document(collection = "tickets")
 public class Ticket {
@@ -17,8 +19,8 @@ public class Ticket {
     private String customerMail;
 
 
-    private double BRLAmount;
-    private double USDAmount;
+   // private BigDecimal BRLAmount;
+  //  private BigDecimal  USDAmount;
 
 
     private TicketStatus status;
