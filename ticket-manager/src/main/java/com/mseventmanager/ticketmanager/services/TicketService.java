@@ -1,6 +1,8 @@
 package com.mseventmanager.ticketmanager.services;
 
 import com.mseventmanager.ticketmanager.dto.*;
+import com.mseventmanager.ticketmanager.exceptions.GlobalExceptionHandler;
+import feign.FeignException;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import com.mseventmanager.ticketmanager.clients.EventManagerClient;
@@ -37,7 +39,14 @@ public class TicketService {
     private RabbitTemplate rabbitTemplate;
 
     public TicketResponseDTO createTicket(TicketRequestDTO request) {
-        EventResponseDTO eventResponse = eventManagerClient.validateEvent(request.getEventId());
+        EventResponseDTO eventResponse;
+
+        try {
+            eventResponse = eventManagerClient.validateEvent(request.getEventId());
+        } catch (FeignException.NotFound e) {
+            throw new EventNotFoundException("Evento com ID " + request.getEventId() + " não encontrado.");
+        }
+
         if (eventResponse == null || eventResponse.getId() == null) {
             throw new EventNotFoundException("Evento com ID " + request.getEventId() + " não encontrado.");
         }
@@ -71,11 +80,12 @@ public class TicketService {
     }
 
 
+
     public TicketResponseDTO getTicketById(String id) {
         Ticket ticket = ticketRepository.findById(id).orElse(null);
 
         if (ticket == null) {
-            return null;
+            throw new TicketNotFoundException("Ticket com ID " + id + " não encontrado.");
         }
 
         return ticketMapper.toDTO(ticket);
@@ -108,24 +118,24 @@ public class TicketService {
     }
 
     public TicketResponseDTO updateTicket(String id, TicketRequestDTO request) {
-        Ticket ticket = ticketRepository.findById(id).orElse(null);
-
-        if (ticket == null) {
-            return null;
-        }
+        Ticket ticket = ticketRepository.findById(id)
+                .orElseThrow(() -> new TicketNotFoundException("Ticket com ID " + id + " não encontrado."));
 
         EventResponseDTO eventResponse = eventManagerClient.validateEvent(request.getEventId());
         if (eventResponse == null || eventResponse.getId() == null) {
             throw new EventNotFoundException("Evento com ID " + request.getEventId() + " não encontrado.");
         }
 
-        ticket = ticketMapper.toTicket(request);
+        ticket.setCustomerName(request.getCustomerName());
+        ticket.setCpf(request.getCpf());
+        ticket.setCustomerMail(request.getCustomerMail());
         ticket.setEvent(eventResponse);
-        ticket.setId(id);
+
         ticket = ticketRepository.save(ticket);
 
         return ticketMapper.toDTO(ticket);
     }
+
 
     public void cancelTicket(String id) {
        Ticket ticket = ticketRepository.findById(id).orElse(null);
@@ -135,6 +145,7 @@ public class TicketService {
         ticket.setStatus(Ticket.TicketStatus.CANCELLED);
         ticketRepository.save(ticket);
     }
+
 }
 
 
