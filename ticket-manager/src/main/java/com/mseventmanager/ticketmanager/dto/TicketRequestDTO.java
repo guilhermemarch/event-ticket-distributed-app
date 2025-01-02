@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -17,6 +19,7 @@ public class TicketRequestDTO {
     private String customerMail;
     private String eventName;
     private String eventId;
-   // private int tickets;
+   // private BigDecimal BRLAmount;
+  //  private BigDecimal  USDAmount;
 
 }

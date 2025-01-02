@@ -108,7 +108,23 @@ public class TicketService {
     }
 
     public TicketResponseDTO updateTicket(String id, TicketRequestDTO request) {
-        return null;
+        Ticket ticket = ticketRepository.findById(id).orElse(null);
+
+        if (ticket == null) {
+            return null;
+        }
+
+        EventResponseDTO eventResponse = eventManagerClient.validateEvent(request.getEventId());
+        if (eventResponse == null || eventResponse.getId() == null) {
+            throw new EventNotFoundException("Evento com ID " + request.getEventId() + " não encontrado.");
+        }
+
+        ticket = ticketMapper.toTicket(request);
+        ticket.setEvent(eventResponse);
+        ticket.setId(id);
+        ticket = ticketRepository.save(ticket);
+
+        return ticketMapper.toDTO(ticket);
     }
 
     public void cancelTicket(String id) {
