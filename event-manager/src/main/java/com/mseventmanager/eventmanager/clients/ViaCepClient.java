@@ -12,6 +12,4 @@ public interface ViaCepClient {
     @GetMapping(value = "{cep}/json")
     ViaCepResponseDTO getAddressByCep(@PathVariable("cep") String cep);
 
-
-
 }
