@@ -14,8 +14,8 @@ git clone https://github.com/guilhermemarch/events-and-tickets-management.git
 
 Este projeto é composto por dois microsserviços principais:
 
-- **ms-event-manager**: Gerencia os eventos (CRUD completo).
-- **ms-ticket-manager**: Gerencia os ingressos, vinculando-os aos eventos.
+- **event-manager**: Gerencia os eventos (CRUD).
+- **ticket-manager**: Gerencia os ingressos, vinculando-os aos eventos.
 
 Os microsserviços são integrados via RabbitMQ para mensagens assíncronas e utilizam Docker para simplificar o ambiente de desenvolvimento.
 
