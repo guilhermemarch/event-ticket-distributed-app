@@ -32,14 +32,65 @@ public class EventService {
     private TicketServiceClient ticketServiceClient;
 
     public EventResponseDTO createEvent(EventRequestDTO request) {
-
         ViaCepResponseDTO viaCepData = fetchAddressFromCep(request.getCep());
 
-        Event event = eventMapper.toEvent(request, viaCepData);
+        Event event = new Event();
+        event.setLogradouro(viaCepData.getLogradouro());
+        event.setBairro(viaCepData.getBairro());
+        event.setCidade(viaCepData.getLocalidade());
+        event.setUf(viaCepData.getUf());
+
+        event.setEventName(request.getEventName());
+        event.setDateTime(request.getDateTime());
+        event.setCep(request.getCep());
 
         event = eventRepository.save(event);
 
-        return eventMapper.toDTO(event);
+        EventResponseDTO responseDTO = new EventResponseDTO();
+        responseDTO.setId(event.getId());
+        responseDTO.setEventName(event.getEventName());
+        responseDTO.setDateTime(event.getDateTime());
+        responseDTO.setCep(event.getCep());
+        responseDTO.setLogradouro(event.getLogradouro());
+        responseDTO.setBairro(event.getBairro());
+        responseDTO.setCidade(event.getCidade());
+        responseDTO.setUf(event.getUf());
+
+        return responseDTO;
+    }
+
+    public EventResponseDTO updateEvent(String id, EventRequestDTO request) {
+        Optional<Event> optionalEvent = eventRepository.findById(id);
+
+        if (optionalEvent.isEmpty()) {
+            return null;
+        }
+
+        Event existingEvent = optionalEvent.get();
+        ViaCepResponseDTO viaCepData = fetchAddressFromCep(request.getCep());
+
+        existingEvent.setLogradouro(viaCepData.getLogradouro());
+        existingEvent.setBairro(viaCepData.getBairro());
+        existingEvent.setCidade(viaCepData.getLocalidade());
+        existingEvent.setUf(viaCepData.getUf());
+
+        existingEvent.setEventName(request.getEventName());
+        existingEvent.setDateTime(request.getDateTime());
+        existingEvent.setCep(request.getCep());
+
+        existingEvent = eventRepository.save(existingEvent);
+
+        EventResponseDTO responseDTO = new EventResponseDTO();
+        responseDTO.setId(existingEvent.getId());
+        responseDTO.setEventName(existingEvent.getEventName());
+        responseDTO.setDateTime(existingEvent.getDateTime());
+        responseDTO.setCep(existingEvent.getCep());
+        responseDTO.setLogradouro(existingEvent.getLogradouro());
+        responseDTO.setBairro(existingEvent.getBairro());
+        responseDTO.setCidade(existingEvent.getCidade());
+        responseDTO.setUf(existingEvent.getUf());
+
+        return responseDTO;
     }
 
     private ViaCepResponseDTO fetchAddressFromCep(String cep) {
@@ -66,22 +117,6 @@ public class EventService {
         eventRepository.deleteById(eventId);
     }
 
-    public EventResponseDTO updateEvent(String id, EventRequestDTO request) {
-        Optional<Event> event = eventRepository.findById(id);
-
-        if (event.isEmpty()) {
-            return null;
-        }
-
-        ViaCepResponseDTO viaCepData = fetchAddressFromCep(request.getCep());
-
-        Event updatedEvent = eventMapper.toEvent(request, viaCepData);
-        updatedEvent.setId(id);
-
-        updatedEvent = eventRepository.save(updatedEvent);
-
-        return eventMapper.toDTO(updatedEvent);
-    }
 
     public List<Event> getAllEventsSorted() {
         List<Event> events = eventRepository.findAllByOrderByEventNameAsc();
