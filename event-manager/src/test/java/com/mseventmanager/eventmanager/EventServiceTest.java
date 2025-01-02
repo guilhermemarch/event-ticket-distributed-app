@@ -149,7 +149,6 @@ class EventServiceTest {
         when(eventRepository.findById(id)).thenReturn(Optional.of(existingEvent));
         when(viaCepClient.getAddressByCep(request.getCep())).thenReturn(viaCepResponse);
 
-        // Mapeamento manual, não usamos mais o mapper
         updatedEvent.setLogradouro(viaCepResponse.getLogradouro());
         updatedEvent.setBairro(viaCepResponse.getBairro());
         updatedEvent.setCidade(viaCepResponse.getLocalidade());
@@ -160,7 +159,6 @@ class EventServiceTest {
 
         when(eventRepository.save(updatedEvent)).thenReturn(updatedEvent);
 
-        // Mapeamento manual para o response
         response.setId(updatedEvent.getId());
         response.setEventName(updatedEvent.getEventName());
         response.setDateTime(updatedEvent.getDateTime());
