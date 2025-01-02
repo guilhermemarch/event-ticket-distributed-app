@@ -18,6 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,9 +53,13 @@ public class TicketService {
             throw new EventNotFoundException("Evento com ID " + request.getEventId() + " não encontrado.");
         }
 
-        Ticket ticket = ticketMapper.toTicket(request);
+        Ticket ticket = new Ticket();
+        ticket.setCustomerName(request.getCustomerName());
+        ticket.setCpf(request.getCpf());
+        ticket.setCustomerMail(request.getCustomerMail());
         ticket.setEvent(eventResponse);
         ticket.setStatus(Ticket.TicketStatus.ACTIVE);
+
         ticket = ticketRepository.save(ticket);
 
         String customerEmail = request.getCustomerMail();
@@ -76,10 +82,17 @@ public class TicketService {
         rabbitTemplate.convertAndSend(RabbitMQConfig.EMAIL_QUEUE, emailMessage);
 
         logger.info("Ticket criado e e-mail enviado para: {}", customerEmail);
-        return ticketMapper.toDTO(ticket);
+
+        TicketResponseDTO responseDTO = new TicketResponseDTO();
+        responseDTO.setId(ticket.getId());
+        responseDTO.setCustomerName(ticket.getCustomerName());
+        responseDTO.setCpf(ticket.getCpf());
+        responseDTO.setCustomerMail(ticket.getCustomerMail());
+        responseDTO.setEvent(eventResponse);
+        responseDTO.setStatus(ticket.getStatus());
+
+        return responseDTO;
     }
-
-
 
     public TicketResponseDTO getTicketById(String id) {
         Ticket ticket = ticketRepository.findById(id).orElse(null);
@@ -138,17 +151,12 @@ public class TicketService {
 
 
     public void cancelTicket(String id) {
-       Ticket ticket = ticketRepository.findById(id).orElse(null);
-         if (ticket == null) {
-                throw new TicketNotFoundException("Ticket com ID " + id + " não encontrado.");
-          }
+        Ticket ticket = ticketRepository.findById(id).orElse(null);
+        if (ticket == null) {
+            throw new TicketNotFoundException("Ticket com ID " + id + " não encontrado.");
+        }
         ticket.setStatus(Ticket.TicketStatus.CANCELLED);
         ticketRepository.save(ticket);
     }
 
 }
-
-
-
-
-

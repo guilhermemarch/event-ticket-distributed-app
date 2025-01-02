@@ -49,17 +49,31 @@ class EventServiceTest {
         EventResponseDTO response = new EventResponseDTO();
 
         when(viaCepClient.getAddressByCep(request.getCep())).thenReturn(viaCepResponse);
-        when(eventMapper.toEvent(request, viaCepResponse)).thenReturn(event);
+
+        event.setLogradouro(viaCepResponse.getLogradouro());
+        event.setBairro(viaCepResponse.getBairro());
+        event.setCidade(viaCepResponse.getLocalidade());
+        event.setUf(viaCepResponse.getUf());
+        event.setEventName(request.getEventName());
+        event.setDateTime(request.getDateTime());
+        event.setCep(request.getCep());
+
         when(eventRepository.save(event)).thenReturn(event);
-        when(eventMapper.toDTO(event)).thenReturn(response);
+
+        response.setId(event.getId());
+        response.setEventName(event.getEventName());
+        response.setDateTime(event.getDateTime());
+        response.setCep(event.getCep());
+        response.setLogradouro(event.getLogradouro());
+        response.setBairro(event.getBairro());
+        response.setCidade(event.getCidade());
+        response.setUf(event.getUf());
 
         EventResponseDTO result = eventService.createEvent(request);
 
         assertEquals(response, result);
         verify(viaCepClient, times(1)).getAddressByCep(request.getCep());
-        verify(eventMapper, times(1)).toEvent(request, viaCepResponse);
         verify(eventRepository, times(1)).save(event);
-        verify(eventMapper, times(1)).toDTO(event);
     }
 
     @Test
@@ -134,18 +148,34 @@ class EventServiceTest {
 
         when(eventRepository.findById(id)).thenReturn(Optional.of(existingEvent));
         when(viaCepClient.getAddressByCep(request.getCep())).thenReturn(viaCepResponse);
-        when(eventMapper.toEvent(request, viaCepResponse)).thenReturn(updatedEvent);
+
+        // Mapeamento manual, não usamos mais o mapper
+        updatedEvent.setLogradouro(viaCepResponse.getLogradouro());
+        updatedEvent.setBairro(viaCepResponse.getBairro());
+        updatedEvent.setCidade(viaCepResponse.getLocalidade());
+        updatedEvent.setUf(viaCepResponse.getUf());
+        updatedEvent.setEventName(request.getEventName());
+        updatedEvent.setDateTime(request.getDateTime());
+        updatedEvent.setCep(request.getCep());
+
         when(eventRepository.save(updatedEvent)).thenReturn(updatedEvent);
-        when(eventMapper.toDTO(updatedEvent)).thenReturn(response);
+
+        // Mapeamento manual para o response
+        response.setId(updatedEvent.getId());
+        response.setEventName(updatedEvent.getEventName());
+        response.setDateTime(updatedEvent.getDateTime());
+        response.setCep(updatedEvent.getCep());
+        response.setLogradouro(updatedEvent.getLogradouro());
+        response.setBairro(updatedEvent.getBairro());
+        response.setCidade(updatedEvent.getCidade());
+        response.setUf(updatedEvent.getUf());
 
         EventResponseDTO result = eventService.updateEvent(id, request);
 
         assertEquals(response, result);
         verify(eventRepository, times(1)).findById(id);
         verify(viaCepClient, times(1)).getAddressByCep(request.getCep());
-        verify(eventMapper, times(1)).toEvent(request, viaCepResponse);
         verify(eventRepository, times(1)).save(updatedEvent);
-        verify(eventMapper, times(1)).toDTO(updatedEvent);
     }
 
     @Test

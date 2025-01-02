@@ -21,8 +21,10 @@ public class TicketResponseDTO {
     private String cpf;
     private String customerMail;
     private EventResponseDTO event;
-  //  private BigDecimal BRLAmount;
-  //  private BigDecimal  USDAmount;
+
+//    private  BigDecimal BRLAmount;
+//    private BigDecimal  USDAmount;
+
     private Ticket.TicketStatus status;
 
 

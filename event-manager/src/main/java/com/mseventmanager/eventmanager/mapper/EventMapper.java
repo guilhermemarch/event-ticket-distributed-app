@@ -15,15 +15,10 @@ public interface EventMapper {
 
         EventMapper INSTANCE = Mappers.getMapper(EventMapper.class);
 
-        @Mapping(target = "logradouro", source = "viaCepResponse.logradouro")
-        @Mapping(target = "bairro", source = "viaCepResponse.bairro")
-        @Mapping(target = "cidade", source = "viaCepResponse.localidade")
-        @Mapping(target = "uf", source = "viaCepResponse.uf")
-        @Mapping(target = "id", ignore = true)
+
         Event toEvent(EventRequestDTO eventRequestDTO, ViaCepResponseDTO viaCepResponse);
 
         EventResponseDTO toDTO(Event event);
 
-        @Mapping(target = "id", ignore = true)
-        void updateEventFromRequest(EventRequestDTO eventRequestDTO, @MappingTarget Event event);
+
 }
