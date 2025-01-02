@@ -273,6 +273,9 @@ class TicketTest {
         assertEquals("guilherme.updated@example.com", response.getCustomerMail());
         verify(ticketRepository, times(1)).save(ticket);
     }
+
+
+
     @Test
     void createTicket_ShouldReturnCreatedTicket() {
         TicketRequestDTO request = new TicketRequestDTO();
