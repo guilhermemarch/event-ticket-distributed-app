@@ -10,9 +10,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface TicketMapper {
 
-
-       @Mapping(target = "event.eventName", source = "eventName")
-        Ticket toTicket(TicketRequestDTO ticketRequest);
+     Ticket toTicket(TicketRequestDTO ticketRequest);
 
 
         TicketResponseDTO toDTO(Ticket ticket);

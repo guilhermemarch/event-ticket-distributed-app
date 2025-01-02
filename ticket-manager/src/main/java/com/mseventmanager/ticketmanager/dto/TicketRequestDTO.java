@@ -19,7 +19,9 @@ public class TicketRequestDTO {
     private String customerMail;
     private String eventName;
     private String eventId;
-   // private BigDecimal BRLAmount;
-  //  private BigDecimal  USDAmount;
+
+
+//    private BigDecimal BRLAmount;
+//    private BigDecimal  USDAmount;
 
 }
