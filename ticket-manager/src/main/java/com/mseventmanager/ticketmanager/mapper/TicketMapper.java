@@ -11,7 +11,7 @@ import org.mapstruct.Mapping;
 public interface TicketMapper {
 
 
-        @Mapping(target = "event.eventName", source = "eventName")
+       @Mapping(target = "event.eventName", source = "eventName")
         Ticket toTicket(TicketRequestDTO ticketRequest);
 
 

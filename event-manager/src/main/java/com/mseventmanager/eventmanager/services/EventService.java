@@ -84,7 +84,7 @@ public class EventService {
     }
 
     public List<Event> getAllEventsSorted() {
-        List<Event> events = eventRepository.findAllByOrderByDateTimeAsc();
+        List<Event> events = eventRepository.findAllByOrderByEventNameAsc();
         return events;
     }
 

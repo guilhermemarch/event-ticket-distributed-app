@@ -7,7 +7,6 @@ import com.mseventmanager.eventmanager.entity.Event;
 import com.mseventmanager.eventmanager.mapper.EventMapper;
 import com.mseventmanager.eventmanager.services.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,17 +65,6 @@ public class EventController {
         return ResponseEntity.ok(events);
     }
 
-//
-//    createEvent(EventRequest request) - POST /create-event (concluido)
-//
-//    getEventById(String id) - GET /get-event/{id} (CONCLUIDO)
-//
-//    getAllEvents() - GET /get-all-events (CONCLUIDO)
-//
-//    getAllEventsSorted() - GET /get-all-events/sorted (CONCLUIDO)
-//
-//    updateEvent(String id, EventRequest request)  - PUT /update-event/{id}  (CONCLUIDO)
-//
-//    deleteEvent(String id) - DELETE /delete-event/{id}  (CONCLUIDO)
+
 
 }

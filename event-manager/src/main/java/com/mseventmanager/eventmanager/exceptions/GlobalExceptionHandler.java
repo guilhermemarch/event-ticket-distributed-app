@@ -17,7 +17,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
 
-    static class ErrorResponse {
+    public static class ErrorResponse {
         private int status;
         private String message;
 
