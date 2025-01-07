@@ -9,14 +9,6 @@ services:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
 
-  mongodb:
-    image: mongo:5.0
-    container_name: mongodb
-    ports:
-      - '27017:27017'
-    networks:
-      - app-network
-
   ms-event-manager:
     build:
       context: ./event-manager
@@ -25,11 +17,10 @@ services:
     environment:
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_PORT: 5672
-      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/scholarship-ship-desafio3
+      SPRING_DATA_MONGODB_URI: mongodb+srv://guilhermemarch:wmNac76ePab2XGja@desafio.tevy2.mongodb.net/scholarship-ship-desafio3?retryWrites=true&w=majority
       SERVER_PORT: 8080
     depends_on:
       - rabbitmq
-      - mongodb
     networks:
       - app-network
 
@@ -41,11 +32,10 @@ services:
     environment:
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_PORT: 5672
-      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/scholarship-ship-desafio3
+      SPRING_DATA_MONGODB_URI: mongodb+srv://guilhermemarch:wmNac76ePab2XGja@desafio.tevy2.mongodb.net/scholarship-ship-desafio3?retryWrites=true&w=majority
       SERVER_PORT: 8081
     depends_on:
       - rabbitmq
-      - mongodb
     networks:
       - app-network
 
