@@ -28,7 +28,7 @@ Certifique-se de que as seguintes ferramentas estão instaladas:
 - Docker e Docker Compose
 - Java 17+
 - Maven
-- MongoDB Compass
+- MongoDB Atlas
 
 ---
 
