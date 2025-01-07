@@ -10,6 +10,7 @@ import com.mseventmanager.eventmanager.exceptions.EventDeletionException;
 import com.mseventmanager.eventmanager.mapper.EventMapper;
 import com.mseventmanager.eventmanager.entity.Event;
 import com.mseventmanager.eventmanager.repositories.EventRepository;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -103,7 +104,10 @@ public class EventService {
     }
 
     public Optional<Event> getEventById(String id) {
-        return eventRepository.findById(id);
+        if (ObjectId.isValid(id)) {
+            return eventRepository.findById(id);
+        }
+        return Optional.empty();
     }
 
 

@@ -15,7 +15,6 @@ public interface EventMapper {
 
         EventMapper INSTANCE = Mappers.getMapper(EventMapper.class);
 
-
         Event toEvent(EventRequestDTO eventRequestDTO, ViaCepResponseDTO viaCepResponse);
 
         EventResponseDTO toDTO(Event event);
