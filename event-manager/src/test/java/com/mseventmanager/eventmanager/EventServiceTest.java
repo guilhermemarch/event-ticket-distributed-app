@@ -1,8 +1,5 @@
 package com.mseventmanager.eventmanager;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 import com.mseventmanager.eventmanager.clients.TicketServiceClient;
 import com.mseventmanager.eventmanager.clients.ViaCepClient;
 import com.mseventmanager.eventmanager.dto.CheckTicketsResponseDTO;
@@ -11,26 +8,27 @@ import com.mseventmanager.eventmanager.dto.EventResponseDTO;
 import com.mseventmanager.eventmanager.dto.ViaCepResponseDTO;
 import com.mseventmanager.eventmanager.entity.Event;
 import com.mseventmanager.eventmanager.exceptions.EventDeletionException;
-import com.mseventmanager.eventmanager.mapper.EventMapper;
 import com.mseventmanager.eventmanager.repositories.EventRepository;
 import com.mseventmanager.eventmanager.services.EventService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class EventServiceTest {
 
     @Mock
     private EventRepository eventRepository;
-
-    @Mock
-    private EventMapper eventMapper;
 
     @Mock
     private ViaCepClient viaCepClient;
@@ -41,162 +39,138 @@ class EventServiceTest {
     @InjectMocks
     private EventService eventService;
 
-    @Test
-    void createEvent_ShouldReturnCreatedEvent() {
-        EventRequestDTO request = new EventRequestDTO();
-        ViaCepResponseDTO viaCepResponse = new ViaCepResponseDTO();
-        Event event = new Event();
-        EventResponseDTO response = new EventResponseDTO();
-
-        when(viaCepClient.getAddressByCep(request.getCep())).thenReturn(viaCepResponse);
-
-        event.setLogradouro(viaCepResponse.getLogradouro());
-        event.setBairro(viaCepResponse.getBairro());
-        event.setCidade(viaCepResponse.getLocalidade());
-        event.setUf(viaCepResponse.getUf());
-        event.setEventName(request.getEventName());
-        event.setDateTime(request.getDateTime());
-        event.setCep(request.getCep());
-
-        when(eventRepository.save(event)).thenReturn(event);
-
-        response.setId(event.getId());
-        response.setEventName(event.getEventName());
-        response.setDateTime(event.getDateTime());
-        response.setCep(event.getCep());
-        response.setLogradouro(event.getLogradouro());
-        response.setBairro(event.getBairro());
-        response.setCidade(event.getCidade());
-        response.setUf(event.getUf());
-
-        EventResponseDTO result = eventService.createEvent(request);
-
-        assertEquals(response, result);
-        verify(viaCepClient, times(1)).getAddressByCep(request.getCep());
-        verify(eventRepository, times(1)).save(event);
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void getAllEvents_ShouldReturnAllEvents() {
-        List<Event> events = List.of(new Event());
-        when(eventRepository.findAll()).thenReturn(events);
+    void testCreateEvent() {
+        EventRequestDTO request = new EventRequestDTO("Music Festival", "2025-01-15T20:00", "12345-678");
+        ViaCepResponseDTO viaCepResponse = new ViaCepResponseDTO("Rua das Flores", "Centro", "São Paulo", "SP");
+        Event event = new Event("Music Festival", "2025-01-15T20:00", "12345-678", "Rua das Flores", "Centro", "São Paulo", "SP");
 
-        List<Event> result = eventService.getAllEvents();
+        when(viaCepClient.getAddressByCep("12345-678")).thenReturn(viaCepResponse);
+        when(eventRepository.save(any(Event.class))).thenReturn(event);
 
-        assertEquals(events, result);
-        verify(eventRepository, times(1)).findAll();
+        EventResponseDTO response = eventService.createEvent(request);
+
+        assertNotNull(response);
+        assertEquals("Music Festival", response.getEventName());
+        verify(viaCepClient).getAddressByCep("12345-678");
+        verify(eventRepository).save(any(Event.class));
     }
 
     @Test
-    void getEventById_ShouldReturnEvent() {
-        String id = "evento5252";
-        Event event = new Event();
+    void testUpdateEvent() {
+        String id = "645a3b4f1a7f6a2e6789abcd";
+        EventRequestDTO request = new EventRequestDTO("Updated Event", "2025-02-20T18:00", "98765-432");
+        ViaCepResponseDTO viaCepResponse = new ViaCepResponseDTO("Av. Paulista", "Bela Vista", "São Paulo", "SP");
+        Event existingEvent = new Event("Old Event", "2025-01-10T20:00", "12345-678", "Rua das Flores", "Centro", "São Paulo", "SP");
+
+        when(eventRepository.findById(id)).thenReturn(Optional.of(existingEvent));
+        when(viaCepClient.getAddressByCep("98765-432")).thenReturn(viaCepResponse);
+        when(eventRepository.save(existingEvent)).thenReturn(existingEvent);
+
+        EventResponseDTO response = eventService.updateEvent(id, request);
+
+        assertNotNull(response);
+        assertEquals("Updated Event", response.getEventName());
+        verify(eventRepository).findById(id);
+        verify(viaCepClient).getAddressByCep("98765-432");
+        verify(eventRepository).save(existingEvent);
+    }
+
+    @Test
+    void testUpdateEventNotFound() {
+        String id = "invalid-id";
+        EventRequestDTO request = new EventRequestDTO("Event", "2025-02-20T18:00", "98765-432");
+
+        when(eventRepository.findById(id)).thenReturn(Optional.empty());
+
+        EventResponseDTO response = eventService.updateEvent(id, request);
+
+        assertNull(response);
+        verify(eventRepository).findById(id);
+        verifyNoInteractions(viaCepClient);
+    }
+
+    @Test
+    void testGetAllEvents() {
+        Event event1 = new Event("Event 1", "2025-01-15T20:00", "12345-678", "Rua A", "Centro", "São Paulo", "SP");
+        Event event2 = new Event("Event 2", "2025-01-20T20:00", "98765-432", "Rua B", "Centro", "Rio de Janeiro", "RJ");
+
+        when(eventRepository.findAll()).thenReturn(Arrays.asList(event1, event2));
+
+        List<Event> events = eventService.getAllEvents();
+
+        assertNotNull(events);
+        assertEquals(2, events.size());
+        verify(eventRepository).findAll();
+    }
+
+    @Test
+    void testGetEventByIdValid() {
+        String id = "645a3b4f1a7f6a2e6789abcd";
+        Event event = new Event("Event", "2025-01-15T20:00", "12345-678", "Rua A", "Centro", "São Paulo", "SP");
+
         when(eventRepository.findById(id)).thenReturn(Optional.of(event));
 
         Optional<Event> result = eventService.getEventById(id);
 
         assertTrue(result.isPresent());
-        assertEquals(event, result.get());
-        verify(eventRepository, times(1)).findById(id);
+        assertEquals("Event", result.get().getEventName());
+        verify(eventRepository).findById(id);
     }
 
     @Test
-    void getEventById_ShouldReturnEmptyIfEventNotFound() {
-        String id = "evento5252";
-        when(eventRepository.findById(id)).thenReturn(Optional.empty());
+    void testGetEventByIdInvalid() {
+        String id = "invalid-id";
 
         Optional<Event> result = eventService.getEventById(id);
 
         assertTrue(result.isEmpty());
-        verify(eventRepository, times(1)).findById(id);
+        verify(eventRepository, never()).findById(id);
     }
 
     @Test
-    void deleteEvent_ShouldDeleteEventIfNoTicketsExist() {
-        String eventId = "evento5252";
-        CheckTicketsResponseDTO response = new CheckTicketsResponseDTO();
-        response.setHasTickets(false);
-        when(ticketServiceClient.checkTicketsByEvent(eventId)).thenReturn(response);
+    void testDeleteEventWithTickets() {
+        String eventId = "645a3b4f1a7f6a2e6789abcd";
+        CheckTicketsResponseDTO response = new CheckTicketsResponseDTO(eventId, true);
 
-        eventService.deleteEvent(eventId);
-
-        verify(ticketServiceClient, times(1)).checkTicketsByEvent(eventId);
-        verify(eventRepository, times(1)).deleteById(eventId);
-    }
-
-    @Test
-    void deleteEvent_ShouldThrowExceptionIfTicketsExist() {
-        String eventId = "evento5252";
-        CheckTicketsResponseDTO response = new CheckTicketsResponseDTO();
-        response.setHasTickets(true);
         when(ticketServiceClient.checkTicketsByEvent(eventId)).thenReturn(response);
 
         assertThrows(EventDeletionException.class, () -> eventService.deleteEvent(eventId));
 
-        verify(ticketServiceClient, times(1)).checkTicketsByEvent(eventId);
-        verifyNoInteractions(eventRepository);
+        verify(ticketServiceClient).checkTicketsByEvent(eventId);
+        verify(eventRepository, never()).deleteById(eventId);
     }
 
     @Test
-    void updateEvent_ShouldReturnUpdatedEvent() {
-        String id = "evento5252";
-        EventRequestDTO request = new EventRequestDTO();
-        ViaCepResponseDTO viaCepResponse = new ViaCepResponseDTO();
-        Event existingEvent = new Event();
-        Event updatedEvent = new Event();
-        EventResponseDTO response = new EventResponseDTO();
+    void testDeleteEventWithoutTickets() {
+        String eventId = "645a3b4f1a7f6a2e6789abcd";
+        CheckTicketsResponseDTO response = new CheckTicketsResponseDTO(eventId, false);
 
-        when(eventRepository.findById(id)).thenReturn(Optional.of(existingEvent));
-        when(viaCepClient.getAddressByCep(request.getCep())).thenReturn(viaCepResponse);
+        when(ticketServiceClient.checkTicketsByEvent(eventId)).thenReturn(response);
 
-        updatedEvent.setLogradouro(viaCepResponse.getLogradouro());
-        updatedEvent.setBairro(viaCepResponse.getBairro());
-        updatedEvent.setCidade(viaCepResponse.getLocalidade());
-        updatedEvent.setUf(viaCepResponse.getUf());
-        updatedEvent.setEventName(request.getEventName());
-        updatedEvent.setDateTime(request.getDateTime());
-        updatedEvent.setCep(request.getCep());
+        eventService.deleteEvent(eventId);
 
-        when(eventRepository.save(updatedEvent)).thenReturn(updatedEvent);
-
-        response.setId(updatedEvent.getId());
-        response.setEventName(updatedEvent.getEventName());
-        response.setDateTime(updatedEvent.getDateTime());
-        response.setCep(updatedEvent.getCep());
-        response.setLogradouro(updatedEvent.getLogradouro());
-        response.setBairro(updatedEvent.getBairro());
-        response.setCidade(updatedEvent.getCidade());
-        response.setUf(updatedEvent.getUf());
-
-        EventResponseDTO result = eventService.updateEvent(id, request);
-
-        assertEquals(response, result);
-        verify(eventRepository, times(1)).findById(id);
-        verify(viaCepClient, times(1)).getAddressByCep(request.getCep());
-        verify(eventRepository, times(1)).save(updatedEvent);
+        verify(ticketServiceClient).checkTicketsByEvent(eventId);
+        verify(eventRepository).deleteById(eventId);
     }
 
     @Test
-    void updateEvent_ShouldReturnNullIfEventNotFound() {
-        String id = "evento5252";
-        EventRequestDTO request = new EventRequestDTO();
-        when(eventRepository.findById(id)).thenReturn(Optional.empty());
+    void testGetAllEventsSorted() {
+        Event event1 = new Event("A Event", "2025-01-15T20:00", "12345-678", "Rua A", "Centro", "São Paulo", "SP");
+        Event event2 = new Event("B Event", "2025-01-20T20:00", "98765-432", "Rua B", "Centro", "Rio de Janeiro", "RJ");
 
-        EventResponseDTO result = eventService.updateEvent(id, request);
+        when(eventRepository.findAllByOrderByEventNameAsc()).thenReturn(Arrays.asList(event1, event2));
 
-        assertNull(result);
-        verify(eventRepository, times(1)).findById(id);
-        verifyNoInteractions(viaCepClient, eventMapper);
-    }
+        List<Event> events = eventService.getAllEventsSorted();
 
-    @Test
-    void getAllEventsSorted_ShouldReturnSortedEvents() {
-        List<Event> events = List.of(new Event());
-        when(eventRepository.findAllByOrderByEventNameAsc()).thenReturn(events);
-
-        List<Event> result = eventService.getAllEventsSorted();
-
-        assertEquals(events, result);
-        verify(eventRepository, times(1)).findAllByOrderByEventNameAsc();
+        assertNotNull(events);
+        assertEquals(2, events.size());
+        assertEquals("A Event", events.get(0).getEventName());
+        verify(eventRepository).findAllByOrderByEventNameAsc();
     }
 }
