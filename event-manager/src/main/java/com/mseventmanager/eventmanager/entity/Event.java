@@ -31,6 +31,16 @@ public class Event {
         this.cidade = cidade;
         this.uf = uf;
     }
+    public Event(String eventName, String dateTime, String cep, String logradouro, String bairro, String cidade, String uf) {
+        this.eventName = eventName;
+        this.dateTime = dateTime;
+        this.cep = cep;
+        this.logradouro = logradouro;
+        this.bairro = bairro;
+        this.cidade = cidade;
+        this.uf = uf;
+    }
+
 
     public String getId() {
         return id;

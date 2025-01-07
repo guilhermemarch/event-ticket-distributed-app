@@ -8,6 +8,13 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+    networks:
+      - app-network
 
   ms-event-manager:
     build:
@@ -17,10 +24,9 @@ services:
     environment:
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_PORT: 5672
-      SPRING_DATA_MONGODB_URI: mongodb+srv://guilhermemarch:wmNac76ePab2XGja@desafio.tevy2.mongodb.net/scholarship-ship-desafio3?retryWrites=true&w=majority
-      SERVER_PORT: 8080
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     networks:
       - app-network
 
@@ -32,10 +38,9 @@ services:
     environment:
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_PORT: 5672
-      SPRING_DATA_MONGODB_URI: mongodb+srv://guilhermemarch:wmNac76ePab2XGja@desafio.tevy2.mongodb.net/scholarship-ship-desafio3?retryWrites=true&w=majority
-      SERVER_PORT: 8081
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     networks:
       - app-network
 
