@@ -13,20 +13,32 @@ services:
     build:
       context: ./event-manager
     ports:
-      - '8082:8080'
+      - '8080:8080'
     environment:
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_PORT: 5672
+      SPRING_DATA_MONGODB_URI: mongodb+srv://guilhermemarch:wmNac76ePab2XGja@desafio.tevy2.mongodb.net/scholarship-ship-desafio3?retryWrites=true&w=majority
+      SERVER_PORT: 8080
     depends_on:
       - rabbitmq
+    networks:
+      - app-network
 
   ms-ticket-manager:
     build:
       context: ./ticket-manager
     ports:
-      - '8083:8081'
+      - '8081:8081'
     environment:
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_PORT: 5672
+      SPRING_DATA_MONGODB_URI: mongodb+srv://guilhermemarch:wmNac76ePab2XGja@desafio.tevy2.mongodb.net/scholarship-ship-desafio3?retryWrites=true&w=majority
+      SERVER_PORT: 8081
     depends_on:
       - rabbitmq
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
