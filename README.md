@@ -51,7 +51,7 @@ Utilize o arquivo `docker-compose.yml` para inicializar os serviços.
    - ticket-manager: [http://localhost:8081](http://localhost:8081)
 4. Crie a base de dados chamada `scholarship-ship-desafio3` no MongoDB Atlas e assegure que a conexão esteja ativa.
 5. Faça o download dos métodos para testes no Postman: [Coleção de metodos PostMan](https://drive.google.com/file/d/123U02DzwTt_dfb-IZbtcB1ZWubq4rUDN/view?usp=sharing).
-6. O projeto também foi implantado na AWS, garantindo alta disponibilidade e escalabilidade. Caso seja necessario acessar esse ambiente, é necessario alterar o endereço e porta de acordo com o IP no AWS.
+6. O projeto também foi implantado na AWS, garantindo alta disponibilidade e escalabilidade. Caso seja necessario acessar esse ambiente, é necessario alterar o endereço e porta de acordo com o IP no AWS. (IP AWS: http://3.21.159.74)
 
 ---
 
