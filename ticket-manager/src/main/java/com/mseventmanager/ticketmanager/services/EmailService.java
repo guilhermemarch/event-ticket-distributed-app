@@ -11,8 +11,8 @@ import java.util.Properties;
 public class EmailService {
 
     public static void sendEmail(String to, String subject, String body) {
-        final String username = "guilhermemarschall10@gmail.com";
-        final String password = "pmjm odqe lqqo kciv"; //SENHA DE APP
+        final String username = "X@gmail.com";
+        final String password = "X"; //SENHA DE APP
 
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
