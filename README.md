@@ -1,4 +1,4 @@
-# Events and Tickets Management
+# event-ticket-distributed-app
 
 ## Clone o Projeto
 
